@@ -1,85 +1,90 @@
-import React from "react";
+import { Button } from '@/components/ui/button';
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { Toaster } from "@/components/ui/toaster";
+} from '@/components/ui/card';
+import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/hooks/use-toast';
 import {
-  Github,
-  GitFork,
-  Star,
-  Package,
+  BookOpen,
   Boxes,
   Cpu,
-  Wrench,
-  Palette,
   FileCode2,
-  BookOpen,
-  Terminal,
   Flame,
-  Sun,
+  GitFork,
+  Github,
   Moon,
-} from "lucide-react";
+  Package,
+  Palette,
+  Star,
+  Sun,
+  Terminal,
+  Wrench,
+} from 'lucide-react';
+import React from 'react';
 
 export default function App() {
   const { toast } = useToast();
   const [darkMode, setDarkMode] = React.useState(() =>
-    document.documentElement.classList.contains("dark")
+    document.documentElement.classList.contains('dark'),
   );
 
   const toggleTheme = () => {
     setDarkMode(!darkMode);
-    document.documentElement.classList.toggle("dark");
-    localStorage.setItem("theme", !darkMode ? "dark" : "light");
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', !darkMode ? 'dark' : 'light');
   };
 
   React.useEffect(() => {
     const isDark =
-      localStorage.getItem("theme") === "dark" ||
-      (!localStorage.getItem("theme") &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
+      localStorage.getItem('theme') === 'dark' ||
+      (!localStorage.getItem('theme') &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
 
     setDarkMode(isDark);
-    document.documentElement.classList.toggle("dark", isDark);
+    document.documentElement.classList.toggle('dark', isDark);
   }, []);
 
   const features = [
     {
+      id: 1,
       icon: <Boxes className="size-5" />,
-      title: "Rsbuild",
-      description: "Modern build tool optimized for React applications",
+      title: 'Rsbuild',
+      description: 'Modern build tool optimized for React applications',
     },
     {
+      id: 2,
       icon: <Palette className="size-5" />,
-      title: "Tailwind CSS",
-      description: "Utility-first CSS framework with custom configuration",
+      title: 'Tailwind CSS',
+      description: 'Utility-first CSS framework with custom configuration',
     },
     {
+      id: 3,
       icon: <Cpu className="size-5" />,
-      title: "shadcn/ui",
-      description: "High-quality, accessible React components",
+      title: 'shadcn/ui',
+      description: 'High-quality, accessible React components',
     },
     {
+      id: 4,
       icon: <Wrench className="size-5" />,
-      title: "Biome",
-      description: "Fast formatting, linting, and more",
+      title: 'Biome',
+      description: 'Fast formatting, linting, and more',
     },
   ];
 
   const commands = [
     {
+      id: 'a',
       command:
-        "git clone https://github.com/suryavirkapur/rsbuild-tw-shadcn-template.git",
-      label: "Clone",
+        'git clone https://github.com/suryavirkapur/rsbuild-tw-shadcn-template.git',
+      label: 'Clone',
     },
-    { command: "pnpm install", label: "Install" },
-    { command: "pnpm dev", label: "Start Dev" },
-    { command: "pnpm build", label: "Build" },
+    { id: 'b', command: 'pnpm install', label: 'Install' },
+    { id: 'c', command: 'pnpm dev', label: 'Start Dev' },
+    { id: 'd', command: 'pnpm build', label: 'Build' },
   ];
 
   return (
@@ -133,9 +138,9 @@ export default function App() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {commands.map((cmd, index) => (
+              {commands.map((cmd) => (
                 <div
-                  key={index}
+                  key={cmd.id}
                   className="flex items-center gap-4 bg-muted/50 rounded-lg p-4"
                 >
                   <Terminal className="size-5 shrink-0" />
@@ -148,7 +153,7 @@ export default function App() {
                     onClick={() => {
                       navigator.clipboard.writeText(cmd.command);
                       toast({
-                        title: "Copied!",
+                        title: 'Copied!',
                         description: `${cmd.label} command copied to clipboard`,
                       });
                     }}
@@ -167,8 +172,8 @@ export default function App() {
             Features
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
-            {features.map((feature, index) => (
-              <Card key={index}>
+            {features.map((feature) => (
+              <Card key={feature.id}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     {feature.icon}

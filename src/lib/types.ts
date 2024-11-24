@@ -4,18 +4,18 @@ export interface DrivingAnalysis {
     score: number;
   };
   following_distance: {
-    safe_distance: "safe" | "approximate" | "unsafe";
+    safe_distance: 'safe' | 'approximate' | 'unsafe';
     score: number;
   };
   signal_compliance: {
     traffic_light: {
-      status: "red" | "yellow" | "green";
+      status: 'red' | 'yellow' | 'green';
       compliance: boolean;
       score: number;
     };
     stop_sign: {
       present: boolean;
-      compliance: boolean | "N/A";
+      compliance: boolean | 'N/A';
       score: number;
     };
   };
@@ -34,7 +34,7 @@ export interface DrivingAnalysis {
   road_sign_awareness: {
     speed_limit_sign: {
       visible: boolean;
-      observing_limit: "observing" | "exceeding" | "unknown";
+      observing_limit: 'observing' | 'exceeding' | 'unknown';
       score: number;
     };
     yield_sign: {
