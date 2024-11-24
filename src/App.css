@@ -1,0 +1,80 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap");
+
+@tailwind components;
+@tailwind utilities;
+@tailwind base;
+
+@layer base {
+  :root {
+    --background: 220, 16%, 96%;
+    --foreground: 222, 20%, 16%;
+
+    --muted: 215, 14%, 80%;
+    --muted-foreground: 222, 20%, 16%;
+
+    --popover: 220, 16%, 96%;
+    --popover-foreground: 222, 20%, 16%;
+
+    --border: 222, 20%, 70%;
+    --input: 222, 20%, 70%;
+
+    --card: 220, 16%, 96%;
+    --card-foreground: 222, 20%, 16%;
+
+    --primary: 222, 20%, 70%;
+    --primary-foreground: 220, 16%, 96%;
+
+    --secondary: 215, 14%, 80%;
+    --secondary-foreground: 222, 20%, 16%;
+
+    --accent: 215, 14%, 80%;
+    --accent-foreground: 222, 20%, 16%;
+
+    --destructive: 0, 80%, 50%;
+    --destructive-foreground: 222, 20%, 16%;
+
+    --ring: 222, 20%, 70%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 220, 16%, 16%;
+    --foreground: 222, 20%, 96%;
+
+    --muted: 215, 14%, 25%;
+    --muted-foreground: 222, 20%, 96%;
+
+    --popover: 220, 16%, 16%;
+    --popover-foreground: 222, 20%, 96%;
+
+    --border: 222, 20%, 40%;
+    --input: 222, 20%, 40%;
+
+    --card: 220, 16%, 16%;
+    --card-foreground: 222, 20%, 96%;
+
+    --primary: 222, 20%, 65%;
+    --primary-foreground: 220, 16%, 16%;
+
+    --secondary: 215, 14%, 25%;
+    --secondary-foreground: 222, 20%, 96%;
+
+    --accent: 215, 14%, 25%;
+    --accent-foreground: 222, 20%, 96%;
+
+    --destructive: 0, 80%, 50%;
+    --destructive-foreground: 222, 20%, 96%;
+
+    --ring: 222, 20%, 40%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
