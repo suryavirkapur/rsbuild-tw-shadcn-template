@@ -1,235 +1,239 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardFooter,
+  CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-
+} from '@/components/ui/card';
+import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/hooks/use-toast';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { COUNTRIES, QUESTIONS } from "./lib/constants";
-import { Header } from "./components/Header";
+  BookOpen,
+  Boxes,
+  Cpu,
+  FileCode2,
+  Flame,
+  GitFork,
+  Github,
+  Moon,
+  Package,
+  Palette,
+  Star,
+  Sun,
+  Terminal,
+  Wrench,
+} from 'lucide-react';
+import React from 'react';
 
-const LocationSelection = ({ onLocationSelected }) => (
-  <Card className="w-full max-w-2xl mx-auto">
-    <CardHeader>
-      <CardTitle>Welcome to Kasysy</CardTitle>
-      <p className="text-sm text-gray-600">
-        Let's start by selecting your location
-      </p>
-    </CardHeader>
-    <CardContent>
-      <div className="space-y-4">
-        <Label htmlFor="location">Select your country</Label>
-        <Select onValueChange={onLocationSelected}>
-          <SelectTrigger>
-            <SelectValue placeholder="Choose your country" />
-          </SelectTrigger>
-          <SelectContent>
-            {COUNTRIES.map((country) => (
-              <SelectItem key={country.id} value={country.id}>
-                {country.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </CardContent>
-  </Card>
-);
+export default function App() {
+  const { toast } = useToast();
+  const [darkMode, setDarkMode] = React.useState(() =>
+    document.documentElement.classList.contains('dark'),
+  );
 
-const App = () => {
-  const [location, setLocation] = useState(null);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [matchedJobs, setMatchedJobs] = useState(null);
-  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-
-  const handleLocationSelected = (value) => {
-    setLocation(value);
-    setShowQuestionnaire(true);
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', !darkMode ? 'dark' : 'light');
   };
 
-  const handleNext = () => {
-    if (!selectedOption) return;
+  React.useEffect(() => {
+    const isDark =
+      localStorage.getItem('theme') === 'dark' ||
+      (!localStorage.getItem('theme') &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-    const newAnswers = [
-      ...answers,
-      {
-        question: QUESTIONS[currentQuestion].question,
-        answerSelected: selectedOption,
-      },
-    ];
+    setDarkMode(isDark);
+    document.documentElement.classList.toggle('dark', isDark);
+  }, []);
 
-    setAnswers(newAnswers);
+  const features = [
+    {
+      id: 1,
+      icon: <Boxes className="size-5" />,
+      title: 'Rsbuild',
+      description: 'Modern build tool optimized for React applications',
+    },
+    {
+      id: 2,
+      icon: <Palette className="size-5" />,
+      title: 'Tailwind CSS',
+      description: 'Utility-first CSS framework with custom configuration',
+    },
+    {
+      id: 3,
+      icon: <Cpu className="size-5" />,
+      title: 'shadcn/ui',
+      description: 'High-quality, accessible React components',
+    },
+    {
+      id: 4,
+      icon: <Wrench className="size-5" />,
+      title: 'Biome',
+      description: 'Fast formatting, linting, and more',
+    },
+  ];
 
-    if (currentQuestion === QUESTIONS.length - 1) {
-      submitAnswers(newAnswers);
-    } else {
-      setCurrentQuestion((prev) => prev + 1);
-      setSelectedOption(null);
-    }
-  };
-
-  const handleBack = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion((prev) => prev - 1);
-      const previousAnswer = answers[currentQuestion - 1];
-      setSelectedOption(previousAnswer?.answerSelected || null);
-      setAnswers((prev) => prev.slice(0, -1));
-    }
-  };
-
-  const submitAnswers = async (finalAnswers) => {
-    setLoading(true);
-    try {
-      const requestBody = {
-        location: location,
-        questions: finalAnswers,
-      };
-
-      const response = await fetch(
-        "https://server.suryavirkapur.workers.dev/analyze",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
-
-      const data = await response.json();
-      setMatchedJobs(data);
-    } catch (error) {
-      console.error("Error submitting answers:", error);
-    }
-    setLoading(false);
-  };
-
-  const MainContent = () => {
-    if (!showQuestionnaire) {
-      return <LocationSelection onLocationSelected={handleLocationSelected} />;
-    }
-
-    if (matchedJobs) {
-      return (
-        <Card className="w-full max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>Your Matched Jobs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <h3 className="font-medium">Recommended Career Paths</h3>
-                <p className="text-sm text-gray-600">
-                  {matchedJobs.careerRecommendation}
-                </p>
-              </div>
-              <h3 className="font-medium mt-6">Available Positions</h3>
-              {matchedJobs.jobs.map((job, index) => (
-                <div key={index} className="p-4 border rounded-lg">
-                  <h3 className="font-medium">{job.title}</h3>
-                  <p className="text-sm text-gray-600 mt-1">{job.company}</p>
-                  <p className="text-sm text-gray-600 mt-1">{job.location}</p>
-                  <p className="text-sm mt-2">{job.description}</p>
-                  <div className="mt-2 flex gap-2">
-                    {job.skills.map((skill, idx) => (
-                      <span
-                        key={idx}
-                        className="text-xs bg-gray-100 px-2 py-1 rounded"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    const progress = ((currentQuestion + 1) / QUESTIONS.length) * 100;
-
-    return (
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle>Skills Assessment</CardTitle>
-          <Progress value={progress} className="w-full" />
-          <p className="text-sm text-gray-600">
-            Question {currentQuestion + 1} of {QUESTIONS.length}
-          </p>
-        </CardHeader>
-
-        <CardContent>
-          <div className="space-y-6">
-            <h2 className="text-lg font-medium">
-              {QUESTIONS[currentQuestion].question}
-            </h2>
-
-            <RadioGroup
-              value={selectedOption}
-              onValueChange={setSelectedOption}
-              className="space-y-3"
-            >
-              {QUESTIONS[currentQuestion].options.map((option) => (
-                <div key={option.id} className="flex items-center space-x-2">
-                  <RadioGroupItem value={option.id} id={option.id} />
-                  <Label htmlFor={option.id}>{option.text}</Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-        </CardContent>
-
-        <CardFooter className="flex justify-between space-x-4">
-          <Button
-            onClick={handleBack}
-            disabled={currentQuestion === 0 || loading}
-            variant="outline"
-            className="w-full"
-          >
-            Back
-          </Button>
-          <Button
-            onClick={handleNext}
-            disabled={!selectedOption || loading}
-            className="w-full"
-          >
-            {loading
-              ? "Processing..."
-              : currentQuestion === QUESTIONS.length - 1
-              ? "Submit"
-              : "Next"}
-          </Button>
-        </CardFooter>
-      </Card>
-    );
-  };
+  const commands = [
+    {
+      id: 'a',
+      command:
+        'git clone https://github.com/suryavirkapur/rsbuild-tw-shadcn-template.git',
+      label: 'Clone',
+    },
+    { id: 'b', command: 'pnpm install', label: 'Install' },
+    { id: 'c', command: 'pnpm dev', label: 'Start Dev' },
+    { id: 'd', command: 'pnpm build', label: 'Build' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <MainContent />
+    <div className="min-h-screen bg-background p-8 max-w-6xl mx-auto">
+      <div className="absolute top-4 right-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          className="rounded-full"
+        >
+          {darkMode ? <Sun className="size-5" /> : <Moon className="size-5" />}
+        </Button>
       </div>
+
+      <header className="text-center mb-12">
+        <h1 className="text-6xl font-bold text-foreground mb-4">
+          Rsbuild Tailwind shadcn/ui Template
+        </h1>
+        <p className="text-xl text-muted-foreground mb-6">
+          Start your next React project with this powerful template
+        </p>
+        <div className="flex justify-center gap-4">
+          <a
+            href="https://github.com/suryavirkapur/rsbuild-tw-shadcn-template"
+            className="flex gap-2"
+          >
+            <Button className="gap-2">
+              <Github className="size-5" />
+              View on GitHub
+            </Button>
+            <Button variant="outline" className="gap-2">
+              <GitFork className="size-5" />
+              Fork
+            </Button>
+            <Button variant="outline" className="gap-2">
+              <Star className="size-5" />
+              Star
+            </Button>
+          </a>
+        </div>
+      </header>
+
+      <main className="space-y-12">
+        <section>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="size-5" />
+                Installation
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {commands.map((cmd) => (
+                <div
+                  key={cmd.id}
+                  className="flex items-center gap-4 bg-muted/50 rounded-lg p-4"
+                >
+                  <Terminal className="size-5 shrink-0" />
+                  <code className="flex-1 font-mono text-sm">
+                    {cmd.command}
+                  </code>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      navigator.clipboard.writeText(cmd.command);
+                      toast({
+                        title: 'Copied!',
+                        description: `${cmd.label} command copied to clipboard`,
+                      });
+                    }}
+                  >
+                    Copy
+                  </Button>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
+
+        <section>
+          <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
+            <Flame className="size-7" />
+            Features
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {features.map((feature) => (
+              <Card key={feature.id}>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    {feature.icon}
+                    {feature.title}
+                  </CardTitle>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="grid md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileCode2 className="size-5" />
+                Tech Stack
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                <li>⚡ React 18</li>
+                <li>🎨 Tailwind CSS</li>
+                <li>🔧 TypeScript</li>
+                <li>📦 Rsbuild</li>
+                <li>🛠 Biome</li>
+                <li>🎯 shadcn/ui</li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="size-5" />
+                Documentation
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground">
+                Check out these resources to learn more about the tools used in
+                this template:
+              </p>
+              <ul className="space-y-2">
+                <li>📘 Rsbuild Docs</li>
+                <li>📗 Tailwind CSS Docs</li>
+                <li>📙 shadcn/ui Docs</li>
+                <li>📕 Biome Docs</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </section>
+      </main>
+
+      <footer className="mt-12 text-center text-sm text-muted-foreground">
+        <p>MIT License © 2024</p>
+      </footer>
+
+      <Toaster />
     </div>
   );
-};
-
-export default App;
+}
